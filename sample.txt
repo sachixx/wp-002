@@ -1,14 +1,25 @@
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+// カテゴリを複数書き出すパンくずリスト
+function the_breadcrumb() {
+     if (!is_home()) {
+          echo '<a href="'.home_url().'">Home</a>';
+     }
+     if (is_category() || is_single()) { //カテゴリページの場合。「Home＞[カテゴリ,カテゴリ]」
+          echo " &gt; ［";
+          the_category(", ");
+          echo "］";
+     }
+     if (is_single()) {//投稿ページの場合。「Home＞[カテゴリ,カテゴリ]＞タイトル」
+          echo " &gt; ";
+          the_title();
+     } elseif (is_page()) { //固定ページの場合。「Home＞親ページ＞子ページ＞タイトル」
+     echo ' &gt; ';
+     global $post; //グローバル変数の取得
+     $ancestors = get_post_ancestors($post->ID);
+          foreach (array_reverse($ancestors) as $parid) {
+          $title = get_page($parid)->post_title;
+          echo '<a href="'.get_page_link($parid).'" title="'.$title.'">'.$title.'</a> &gt; ';
+          }
+     the_title();
+     }
+}
